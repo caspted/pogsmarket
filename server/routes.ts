@@ -7,7 +7,7 @@ function routes(app: Express) {
   app.get("/", (req: Request, res: Response) => {
     res.send("This is a simple server!");
   });
-  
+
   app.get("/api/pogs", async (req: Request, res: Response) => {
     const pogs = await prisma.pogs.findMany();
   
@@ -70,6 +70,7 @@ function routes(app: Express) {
     });
   
     res.json({ message: "Pogs deleted successfully" });
+
   });
 }
 
