@@ -10,52 +10,67 @@ function routes(app: Express) {
 
   app.get("/api/pogs", async (req: Request, res: Response) => {
     const pogs = await prisma.pogs.findMany();
+  
+    res.json(pogs); 
+  })
 
-    res.json(pogs);
-  });
-
-  app.get("/api/pogs:id", async (req: Request, res: Response) => {
-    const pogs = await prisma.pogs.findUnique({
+  app.get("/api/pogs/:id", async (req: Request, res: Response) => {
+    const { id } = req.params;
+  
+    const pog = await prisma.pogs.findUnique({
       where: {
-        id: 1,
-      },
+        id: parseInt(id)
+      }
     });
-    res.json(pogs);
+  
+    res.json(pog);
   });
-
+  
   app.post("/api/pogs", async (req: Request, res: Response) => {
-    const pogs = await prisma.pogs.create({
+    const { name, ticker_symbol, price, color } = req.body;
+  
+    const newPog = await prisma.pogs.create({
       data: {
-        name: "Tepig",
-        ticker_symbol: "TPIG",
-        price: 75,
-        color: "orange",
-      },
+        name,
+        ticker_symbol,
+        price,
+        color
+      }
     });
-    res.json(pogs);
+  
+    res.status(201).json(newPog);
+  }); 
+
+  app.put("/api/pogs/:id", async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { name, ticker_symbol, price, color } = req.body;
+  
+    const updatedPog = await prisma.pogs.update({
+      where: {
+        id: parseInt(id)
+      },
+      data: {
+        name,
+        ticker_symbol,
+        price,
+        color
+      }
+    });
+  
+    res.json(updatedPog);
   });
 
-  app.put("/api/pogs:id", async (req: Request, res: Response) => {
-    const pogs = await prisma.pogs.update({
+  app.delete("/api/pogs/:id", async (req: Request, res: Response) => {
+    const { id } = req.params;
+  
+    await prisma.pogs.delete({
       where: {
-        id: 1,
-      },
-      data: {
-        name: "Teboar",
-        ticker_symbol: "TBOAR",
-        price: 100,
-        color: "blue",
-      },
+        id: parseInt(id)
+      }
     });
-    res.json(pogs);
-  });
+  
+    res.json({ message: "Pogs deleted successfully" });
 
-  app.delete("/api/pogs:id", async (req: Request, res: Response) => {
-    const pogs = await prisma.pogs.delete({
-      where: {
-        id: 2,
-      },
-    });
   });
 }
 
