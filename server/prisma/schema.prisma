@@ -17,6 +17,22 @@ model Pogs {
   id              Int       @id @default(autoincrement())
   name            String    @unique
   ticker_symbol   String    @unique
-  price           Float
+  previous_price  Float
+  current_price   Float
   color           String
+}
+
+model UserPogs {
+  id              Int       @id @default(autoincrement())
+  pogs_id         Int       
+  user_id         Int       
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  name            String    @unique
+  email           String    @unique
+  password        String    @unique
+  is_admin        Boolean   
+  wallet          Float
 }
