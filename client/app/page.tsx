@@ -1,49 +1,48 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 
-const invoices = [ // This is just a placeholder data
+const pogsInMarket = [ // This is just a placeholder data
   {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
+    id: 1,
+    name: "Apple",
+    currentPrice: "$1000000",
+    previousPrice: "$1200000",
+    color: "silver",
+    ticker: "AAPL"
   },
   {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
+    id: 2,
+    name: "Alphabet Inc. (Google)",
+    currentPrice: "$2000000",
+    previousPrice: "$1900000",
+    color: "red",
+    ticker: "GOOG"
   },
   {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
+    id: 3,
+    name: "Hewlett-Packard Enterprise Company",
+    currentPrice: "$800000",
+    previousPrice: "$790000",
+    color: "yellow",
+    ticker: "HPQ"
   },
   {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
+    id: 4,
+    name: "Intel Corporation",
+    currentPrice: "$1500000",
+    previousPrice: "$1600000",
+    color: "blue",
+    ticker: "INTC"
   },
   {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
+    id: 5,
+    name: "Berkshire Hathaway Inc.",
+    currentPrice: "$900000",
+    previousPrice: "$910000",
+    color: "green",
+    ticker: "BRK.A"
   },
 ]
 
@@ -104,37 +103,37 @@ export default function Home() {
         </Card>
       </div>
 
-      <div className="flex-col justify-center mt-16 mx-12">
+      <div className="flex-col justify-center mt-16 mx-40">
         <div>
-          <h1 className="text-2xl font-bold">Market</h1>
+          <h1 className="text-2xl font-bold mb-2">Pogs Market</h1>
         </div>
         <div>
           <Table>
-            <TableCaption>A list of your recent invoices.</TableCaption>
+            <TableCaption>A list of Pogs on the market.</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead className="w-[200px]">Current Price</TableHead>
+                <TableHead className="w-[200px]">Previous Price</TableHead>
+                <TableHead className="w-[100px]">Color</TableHead>
+                <TableHead className="w-[100px]">Ticker</TableHead>
+                <TableHead className="text-right">Buy now!</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {invoices.map((invoice) => (
-                <TableRow key={invoice.invoice}>
-                  <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                  <TableCell>{invoice.paymentStatus}</TableCell>
-                  <TableCell>{invoice.paymentMethod}</TableCell>
-                  <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+              {pogsInMarket.map((pogs) => (
+                <TableRow key={pogs.id}>
+                  <TableCell className="font-medium">{pogs.name}</TableCell>
+                  <TableCell>{pogs.currentPrice}</TableCell>
+                  <TableCell>{pogs.previousPrice}</TableCell>
+                  <TableCell>{pogs.previousPrice}</TableCell>
+                  <TableCell>{pogs.ticker}</TableCell>
+                  <TableCell className="text-right">
+                    <Button>Buy</Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={3}>Total</TableCell>
-                <TableCell className="text-right">$2,500.00</TableCell>
-              </TableRow>
-            </TableFooter>
           </Table>
         </div>
       </div>
