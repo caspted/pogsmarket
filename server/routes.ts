@@ -26,52 +26,97 @@ function routes(app: Express) {
     res.json(pog);
   });
   
-  app.post("/api/pogs", async (req: Request, res: Response) => {
-    const { name, ticker_symbol, price, color } = req.body;
+  // app.post("/api/pogs", async (req: Request, res: Response) => {
+  //   const { name, ticker_symbol, price, color } = req.body;
   
-    const newPog = await prisma.pogs.create({
-      data: {
-        name,
-        ticker_symbol,
-        price,
-        color
-      }
-    });
+  //   const newPog = await prisma.pogs.create({
+  //     data: {
+  //       name,
+  //       ticker_symbol,
+  //       price,
+  //       color
+  //     }
+  //   });
   
-    res.status(201).json(newPog);
-  }); 
+  //   res.status(201).json(newPog);
+  // }); 
 
-  app.put("/api/pogs/:id", async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { name, ticker_symbol, price, color } = req.body;
+
+//admin side APIs
+  app.get("/api/admin/pogs", async (req: Request, res: Response) => {
+    try {
+      const adminPogs = prisma.pogs.findMany()
+      res.status(200).json(adminPogs)
+
+    } catch {
+      res.status(500).json({ error: 'Interal Server Error'})
+    }
+
+  })
+
+  app.post("/api/admin/pogs", async (req: Request, res: Response) => {
+    try {
+      const { name, ticker_symbol, current_price, color} = req.body
+      const previous_price = current_price
   
-    const updatedPog = await prisma.pogs.update({
-      where: {
-        id: parseInt(id)
-      },
-      data: {
-        name,
-        ticker_symbol,
-        price,
-        color
+      const newPogs = prisma.pogs.create({
+        data: {
+          name,
+          ticker_symbol,
+          previous_price,
+          current_price,
+          color
+        }
       }
-    });
+      )
   
-    res.json(updatedPog);
+      res.status(201).json(newPogs);
+    } catch {
+      return res.status(500).json({ error: 'Internal Server Error'})
+    }
+
+  })
+
+  app.put("/api/admin/pogs/:id", async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { name, ticker_symbol, current_price, color } = req.body;
+    
+      const updatedPog = await prisma.pogs.update({
+        where: {
+          id: parseInt(id)
+        },
+        data: {
+          name,
+          ticker_symbol,
+          current_price,
+          color
+        }
+      });
+    
+      res.status(200).json(updatedPog);
+    } catch {
+      res.status(500).json({ error: "Internal Server Error"})
+    }
+  
   });
 
-  app.delete("/api/pogs/:id", async (req: Request, res: Response) => {
-    const { id } = req.params;
+  app.delete("/api/admin/pogs/:id", async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
   
-    await prisma.pogs.delete({
-      where: {
-        id: parseInt(id)
-      }
-    });
-  
-    res.json({ message: "Pogs deleted successfully" });
+      await prisma.pogs.delete({
+        where: {
+          id: parseInt(id)
+        }
+      });
+      res.status(202).json({ message: "Pogs deleted successfully" });
+    } catch {
+      res.status(500).json({ error: "Internal Server Error"})
+    }
 
   });
+
 }
 
 export default routes;
