@@ -56,20 +56,23 @@ describe("Pogs", () => {
           {
             name: "Tepig",
             ticker_symbol: "TPIG",
-            price: 75,
-            color: "orange"
+            color: "orange",
+            current_price: 75,
+            previous_price: 50
           },
           {
             name: "Snivy",
             ticker_symbol: "SNIV",
-            price: 70,
-            color: "green"
+            color: "green",
+            current_price: 70,
+            previous_price: 80
           },
           {
             name: "Oshawott",
             ticker_symbol: "OSWT",
-            price: 70,
-            color: "blue"
+            color: "blue",
+            current_price: 70,
+            previous_price: 75
           }
         ]
       })
@@ -91,8 +94,9 @@ describe("Pogs", () => {
         data: {
           name: "Tepig",
           ticker_symbol: "TPIG",
-          price: 75,
-          color: "orange"
+          color: "orange",
+          current_price: 75,
+          previous_price: 50
         }
       });
 
@@ -133,16 +137,18 @@ describe("Pogs", () => {
         data: {
           name: "Tepig",
           ticker_symbol: "TPIG",
-          price: 75,
-          color: "orange"
+          color: "orange",
+          current_price: 75,
+          previous_price: 50
         }
       });
 
       const updatedPog = {
         name: "Snivy",
         ticker_symbol: "SNIV",
-        price: 70,
-        color: "green"
+        color: "green",
+        current_price: 70,
+        previous_price: 75
       };
 
       // invocation
@@ -162,8 +168,9 @@ describe("Pogs", () => {
         data: {
           name: "Oshawott",
           ticker_symbol: "OSWT",
-          price: 70,
-          color: "blue"
+          color: "blue",
+          current_price: 70,
+          previous_price: 75
         }
       });
 
@@ -183,9 +190,10 @@ describe("Pogs", () => {
       const pog = await prisma.pogs.create({
         data: {
           name: "Snivy",
-        ticker_symbol: "SNIV",
-        price: 70,
-        color: "green"
+          ticker_symbol: "SNIV",
+          color: "green",
+          current_price: 70,
+          previous_price: 80
         }
       });
 
