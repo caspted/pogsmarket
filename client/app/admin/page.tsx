@@ -2,7 +2,7 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
+import { Form, FormField } from "@/components/ui/form";
 
 const formSchema = z.object({
   name: z.string().nonempty().min(2).max(100),
@@ -36,7 +36,7 @@ export default function Home() {
         <div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)}>
-
+              <FormField />
             </form>
           </Form>
         </div>
