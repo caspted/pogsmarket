@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://postgres:myfamilyisimportant@localhost:5432/pogsmarket-test?schema=public"
 }
 
 model Pogs {
