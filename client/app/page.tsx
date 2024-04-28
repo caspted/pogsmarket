@@ -7,78 +7,96 @@ const pogsInMarket = [ // This is just a placeholder data
   {
     id: 1,
     name: "Apple",
-    currentPrice: "$1000000",
-    previousPrice: "$1200000",
+    currentPrice: 1000000,
+    previousPrice: 1200000,
     color: "silver",
     ticker: "AAPL"
   },
   {
     id: 2,
     name: "Alphabet Inc. (Google)",
-    currentPrice: "$2000000",
-    previousPrice: "$1900000",
+    currentPrice: 2000000,
+    previousPrice: 1900000,
     color: "red",
     ticker: "GOOG"
   },
   {
     id: 3,
     name: "Hewlett-Packard Enterprise Company",
-    currentPrice: "$800000",
-    previousPrice: "$790000",
+    currentPrice: 800000,
+    previousPrice: 790000,
     color: "yellow",
     ticker: "HPQ"
   },
   {
     id: 4,
     name: "Intel Corporation",
-    currentPrice: "$1500000",
-    previousPrice: "$1600000",
+    currentPrice: 1500000,
+    previousPrice: 1600000,
     color: "blue",
     ticker: "INTC"
   },
   {
     id: 5,
     name: "Berkshire Hathaway Inc.",
-    currentPrice: "$900000",
-    previousPrice: "$910000",
+    currentPrice: 900000,
+    previousPrice: 910000,
     color: "green",
     ticker: "BRK.A"
   },
 ]
+
+const priceDifference = (currentPrice: number, previousPrice: number) => {
+  let result = ((currentPrice - previousPrice) / previousPrice) * 100;
+    if (result > 0) {
+      return `+${result.toFixed(2) + "%"}`;
+    }
+  return result.toFixed(2) + "%";
+}
 
 export default function Home() {
   return (
     <main>
       <div className="flex overflow-hidden space-x-4">
         <div className="flex space-x-4 ml-2 animate-loop-scroll">
-          <Badge variant="secondary">token1</Badge>
-          <Badge variant="secondary">token2</Badge>
-          <Badge variant="secondary">token3</Badge>
-          <Badge variant="secondary">token4</Badge>
-          <Badge variant="secondary">token5</Badge>
-          <Badge variant="secondary">token6</Badge>
-          <Badge variant="secondary">token7</Badge>
-          <Badge variant="secondary">token8</Badge>
-          <Badge variant="secondary">token9</Badge>
-          <Badge variant="secondary">token10</Badge>
-          <Badge variant="secondary">token11</Badge>
-          <Badge variant="secondary">token12</Badge>
+          {pogsInMarket.map((pogs) => {
+            const difference = priceDifference(pogs.currentPrice, pogs.previousPrice);
+            const isPositive = difference.startsWith('-') ? 'text-red-500' : 'text-green-500';
+
+            return (
+              <Badge key={pogs.id} variant="secondary" className="w-32 justify-center gap-1">
+                {pogs.ticker} <span className={isPositive}>{difference}</span>
+              </Badge>
+            );
+          })}
         </div>
         
         {/* Duplicate the items to make it look like its looping */}
         <div className="flex space-x-4 animate-loop-scroll" aria-hidden="true"> 
-          <Badge variant="secondary">token1</Badge>
-          <Badge variant="secondary">token2</Badge>
-          <Badge variant="secondary">token3</Badge>
-          <Badge variant="secondary">token4</Badge>
-          <Badge variant="secondary">token5</Badge>
-          <Badge variant="secondary">token6</Badge>
-          <Badge variant="secondary">token7</Badge>
-          <Badge variant="secondary">token8</Badge>
-          <Badge variant="secondary">token9</Badge>
-          <Badge variant="secondary">token10</Badge>
-          <Badge variant="secondary">token11</Badge>
-          <Badge variant="secondary">token12</Badge>
+          {pogsInMarket.map((pogs) => {
+            const difference = priceDifference(pogs.currentPrice, pogs.previousPrice);
+            const isPositive = difference.startsWith('-') ? 'text-red-500' : 'text-green-500';
+
+            return (
+              <Badge key={pogs.id} variant="secondary" className="w-32 justify-center gap-1">
+                {pogs.ticker} <span className={isPositive}>{difference}</span>
+              </Badge>
+            );
+          })}
+        </div>
+
+        {/* Duplicate the items to make it look like its looping */}
+        <div className="flex space-x-4 animate-loop-scroll" aria-hidden="true"> 
+          {pogsInMarket.map((pogs) => {
+            const difference = priceDifference(pogs.currentPrice, pogs.previousPrice);
+            const isPositive = difference.startsWith('-') ? 'text-red-500' : 'text-green-500';
+
+            return (
+              <Badge key={pogs.id} variant="secondary" className="w-32 justify-center gap-1">
+                {pogs.ticker} <span className={isPositive}>{difference}</span>
+              </Badge>
+            );
+          })}
         </div>
       </div>
 
