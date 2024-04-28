@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
+import priceDifference from "@/utils/utilFuncitons";
 
 const pogsInMarket = [ // This is just a placeholder data
   {
@@ -45,14 +46,6 @@ const pogsInMarket = [ // This is just a placeholder data
     ticker: "BRK.A"
   },
 ]
-
-const priceDifference = (currentPrice: number, previousPrice: number) => {
-  let result = ((currentPrice - previousPrice) / previousPrice) * 100;
-    if (result > 0) {
-      return `+${result.toFixed(2) + "%"}`;
-    }
-  return result.toFixed(2) + "%";
-}
 
 export default function Home() {
   return (
@@ -133,24 +126,30 @@ export default function Home() {
                 <TableHead>Name</TableHead>
                 <TableHead className="w-[200px]">Current Price</TableHead>
                 <TableHead className="w-[200px]">Previous Price</TableHead>
+                <TableHead className="w-[100px]">% Diff</TableHead>
                 <TableHead className="w-[100px]">Color</TableHead>
                 <TableHead className="w-[100px]">Ticker</TableHead>
                 <TableHead className="text-right">Buy now!</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {pogsInMarket.map((pogs) => (
+              {pogsInMarket.map((pogs) => {
+                const difference = priceDifference(pogs.currentPrice, pogs.previousPrice);
+                const isPositive = difference.startsWith('-') ? 'text-red-500' : 'text-green-500';
+
+                return (
                 <TableRow key={pogs.id}>
                   <TableCell className="font-medium">{pogs.name}</TableCell>
                   <TableCell>{pogs.currentPrice}</TableCell>
                   <TableCell>{pogs.previousPrice}</TableCell>
-                  <TableCell>{pogs.previousPrice}</TableCell>
+                  <TableCell><span className={isPositive}>{difference}</span></TableCell>
+                  <TableCell>{pogs.color}</TableCell>
                   <TableCell>{pogs.ticker}</TableCell>
                   <TableCell className="text-right">
                     <Button>Buy</Button>
                   </TableCell>
                 </TableRow>
-              ))}
+              )})}
             </TableBody>
           </Table>
         </div>

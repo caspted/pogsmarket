@@ -49,7 +49,7 @@ export default function PogsForm() {
   
   return <Card className="w-full p-4">
   <CardTitle className="text-xl font-bold mb-4">
-    Manage Pogs
+    Add Pogs
   </CardTitle>
   <Form {...form}>
     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
@@ -90,7 +90,7 @@ export default function PogsForm() {
           <FormMessage />
         </FormItem>
       }}/>
-      <Button className="mt-8" type="submit">Submit</Button>
+      <Button className="mt-8" type="submit">Add Pog</Button>
     </form>
   </Form>
 </Card>
