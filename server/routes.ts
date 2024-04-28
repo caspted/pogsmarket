@@ -1,45 +1,77 @@
 import { Express, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import cors from "cors"
 
 export const prisma = new PrismaClient();
 
 function routes(app: Express) {
-  app.get("/", (req: Request, res: Response) => {
-    res.send("This is a simple server!");
-  });
 
+  app.use(cors())
+
+//pogs market APIs
   app.get("/api/pogs", async (req: Request, res: Response) => {
-    const pogs = await prisma.pogs.findMany();
-  
-    res.json(pogs); 
+    try {
+      const pogs = await prisma.pogs.findMany();
+      res.status(200).json(pogs); 
+    } catch {
+      res.status(500).json({ error: 'Internal Server Error'})
+    }
+
   })
 
   app.get("/api/pogs/:id", async (req: Request, res: Response) => {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
   
-    const pog = await prisma.pogs.findUnique({
-      where: {
-        id: parseInt(id)
-      }
-    });
-  
-    res.json(pog);
+      const pog = await prisma.pogs.findUnique({
+        where: {
+          id: parseInt(id)
+        }
+      });
+
+      res.status(200).json(pog);
+    } catch {
+      res.status(500).json({ error: 'Internal Server Error'})
+    }
+
   });
-  
-  // app.post("/api/pogs", async (req: Request, res: Response) => {
-  //   const { name, ticker_symbol, price, color } = req.body;
-  
-  //   const newPog = await prisma.pogs.create({
-  //     data: {
-  //       name,
-  //       ticker_symbol,
-  //       price,
-  //       color
-  //     }
-  //   });
-  
-  //   res.status(201).json(newPog);
-  // }); 
+
+  app.put("/api/pogs/:id", async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params
+      const { current_price } = req.body
+
+
+      const pog = await prisma.pogs.findUnique({
+        where: {
+          id: parseInt(id)
+        },
+      })
+
+      if (!pog) {
+        return res.status(404).json({ error: 'Pog not found' });
+      }
+
+      const previous_price = pog.current_price
+
+      const updatedValue = prisma.pogs.update({
+        where: {
+          id: parseInt(id)
+        },
+        data: {
+          previous_price,
+          current_price
+        }
+      })
+      res.status(201).json(updatedValue)
+
+    } catch {
+      res.status(500).json({ error: 'Internal Server Error'})
+    }
+  })
+
+  // user information APIs
+
 
 
 //admin side APIs
@@ -132,6 +164,7 @@ function routes(app: Express) {
     }
 
   });
+
 
 }
 
