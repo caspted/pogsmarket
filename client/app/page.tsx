@@ -4,6 +4,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { priceDifference, setUserID } from "@/utils/utilFuncitons";
 import React, { useEffect, useState } from "react";
 
@@ -16,9 +27,26 @@ type Pogs = {
   ticker_symbol: string;
 };
 
+type Users = {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  is_admin: boolean;
+  wallet: number;
+};
+
+type UserPogs = {
+  id: number;
+  pogs_id: number;
+  user_id: number;
+}
+
 export default function Home() {
 
   const [pogs, setPogs] = useState<Pogs[]>([]);
+  const [user, setUser] = useState<Users>();
+  const [userPogs, setUserPogs] = useState<UserPogs[]>([]);
 
   const getAllPogs = async () => {
     try {
@@ -31,32 +59,33 @@ export default function Home() {
     }
   };
 
-  // const getUserWallet = async (id: number) => {
-  //   try {
-  //     const response = await fetch(`http://localhost:3001/api/user/${id}`);
-  //     const data = await response.json();
-  //     console.log(data);
-  //   }
-  //   catch (error) {
-  //     console.error(error);
-  //   }
-  // }
+  const getUser = async (id: number) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/user/${id}`);
+      const data = await response.json();
+      setUser(data);
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
 
-  // const buyPogs = async (id: number) => {
-  //   try {
-  //     const response = await fetch(`http://localhost:3001/api/admin/pogs/${id}`, {
-  //       method: 'POST',
-  //     });
-  //     const data = await response.json();
-  //     console.log(data);
-  //   }
-  //   catch (error) {
-  //     console.error(error);
-  //   }
-  // }
+  const buyPogs = async (pogs_id: number, user_id: number | undefined) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/user/${user_id}/pogs/${pogs_id}`, {
+        method: 'POST',
+      });
+      const data = await response.json();
+      setUserPogs(data);
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
 
   useEffect(() => {
     getAllPogs();
+    getUser(setUserID);
   }, []);
 
   return (
@@ -105,23 +134,10 @@ export default function Home() {
       </div>
 
       <div className="flex justify-center mt-16 mx-12 space-x-8">
-        <Card className="w-1/3 p-6 bg-slate-200">
-          <CardTitle>Top Selling Pog 1</CardTitle>
-          <CardContent>Content here</CardContent>
-          <CardDescription>Description here</CardDescription>
-          <CardFooter>Footer here</CardFooter>
-        </Card>
-        <Card className="w-1/3 p-6 bg-slate-200">
-        <CardTitle>Top Selling Pog 2</CardTitle>
-          <CardContent>Content here</CardContent>
-          <CardDescription>Description here</CardDescription>
-          <CardFooter>Footer here</CardFooter>
-        </Card>
-        <Card className="w-1/3 p-6 bg-slate-200">
-        <CardTitle>Top Selling Pog 3</CardTitle>
-          <CardContent>Content here</CardContent>
-          <CardDescription>Description here</CardDescription>
-          <CardFooter>Footer here</CardFooter>
+        <Card key={user?.id} className="w-1/4 p-6 bg-slate-200">
+          <CardTitle className="mb-4">Your Balance: ${user?.wallet}</CardTitle>
+          <CardDescription>Welcome, {user?.name}!</CardDescription>
+          <CardDescription>email: {user?.email}</CardDescription>
         </Card>
       </div>
 
@@ -157,7 +173,25 @@ export default function Home() {
                   <TableCell>{pogs.color}</TableCell>
                   <TableCell>{pogs.ticker_symbol}</TableCell>
                   <TableCell className="text-right">
-                    <Button>Buy</Button>
+                    {/* <Button>Buy</Button>  */}
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="default">Buy</Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. Payment will be taken form you wallet balance.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => buyPogs(pogs.id, user?.id)}>Buy!</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                    {/* turn button into modal for confirmation */}
                   </TableCell>
                 </TableRow>
               )})}
