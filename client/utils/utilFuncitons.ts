@@ -7,4 +7,8 @@ const priceDifference = (currentPrice: number, previousPrice: number) => {
   return result.toFixed(2) + "%";
 }
 
-export default priceDifference;
+const setUserID = 99;
+
+const utilFunctions = { priceDifference, setUserID };
+
+export default utilFunctions;

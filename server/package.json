@@ -29,6 +29,7 @@
     "build": "npx tsc",
     "start": "dotenv -e .env.development -- node dist/server.js",
     "dev": "dotenv -e .env.development -- nodemon server.ts",
+    "test-dev": "dotenv -e .env.test -- nodemon server.ts",
     "migrate:test": "dotenv -e .env.test -- npx prisma migrate dev",
     "test": "dotenv -e .env.test -- jest",
     "migrate": "dotenv -e .env.development -- npx prisma migrate dev"

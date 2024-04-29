@@ -35,7 +35,7 @@ function routes(app: Express) {
 
       res.status(200).json(pog);
     } catch {
-      res.status(500).json({ error: 'Internal Server Error'})
+      res.status(500).json({ error: 'Internal Server Error' })
     }
 
   });
@@ -74,8 +74,59 @@ function routes(app: Express) {
     }
   })
 
+  // user-owned Pogs APIs (GET all, POST, DELETE only)
+  app.get("/api/user/:userid/pogs", async (req: Request, res: Response) => {
+    try {
+      const userPogs = await prisma.userPogs.findMany()
+      res.status(200).json(userPogs)
+    } catch {
+      res.status(500).json({ error: 'Internal Server Error'})
+    }
+  })
+
+  app.post("/api/user/:userid/pogs/:pogsid", async (req: Request, res: Response) => {
+    try {
+
+      const newUserPog = await prisma.userPogs.create({
+        data: {
+          pogs_id: parseInt(req.params.pogsid),
+          user_id: parseInt(req.params.userid),
+        }
+      })
+
+      res.status(201).json(newUserPog)
+    } catch {
+      res.status(500).json({ error: 'Internal Service Error'})
+    }
+  })
+
+  app.delete("/api/user/:userid/pogs/:userpogsid", async (req: Request, res: Response) => {
+    try {
+      const { userpogsid } = req.params
+
+      const userPogs = await prisma.userPogs.findUnique({
+        where: {
+          id: parseInt(userpogsid)
+        }
+      })
+
+      if (!userPogs) {
+        return res.status(404).json({ error: 'User-owned Pogs not found'})
+      }
+
+      await prisma.userPogs.delete({
+        where: {
+          id: parseInt(userpogsid)
+        },
+      })
+      res.json(202).json({ message: 'Pog has been sold' })
+    } catch {
+      res.status(500).json({ error: 'Internal Server Error'})
+    }
+  })
+
   // user information APIs
-  app.get("/api/user/pogs", async (req: Request, res: Response) => {
+  app.get("/api/user", async (req: Request, res: Response) => {
     try {
       const users = await prisma.user.findMany()
       res.status(200).json(users)
@@ -84,7 +135,7 @@ function routes(app: Express) {
     }
   })
 
-  app.get("/api/user/pogs/:id", async (req: Request, res: Response) => {
+  app.get("/api/user/:id", async (req: Request, res: Response) => {
     try {
       const { id } = req.params
       const user = await prisma.user.findUnique({
@@ -103,7 +154,7 @@ function routes(app: Express) {
     }
   })
 
-  app.post("/api/user/pogs/:id", async (req: Request, res: Response) => {
+  app.post("/api/user", async (req: Request, res: Response) => {
     try {
       const { name, email, password } = req.body
 
@@ -113,7 +164,7 @@ function routes(app: Express) {
           email,
           password,
           is_admin: true,
-          wallet: 500,
+          wallet: 10000,
         }
       })
 
@@ -123,7 +174,7 @@ function routes(app: Express) {
     }
   })
 
-  app.put("/api/user/pogs/:id", async (req: Request, res: Response) => {
+  app.put("/api/user/:id", async (req: Request, res: Response) => {
     try {
       const { id } = req.params
       const { wallet } = req.body
@@ -153,7 +204,7 @@ function routes(app: Express) {
     }
   })
 
-  app.delete("/api/user/pogs/:id", async (req: Request, res: Response) => {
+  app.delete("/api/user/:id", async (req: Request, res: Response) => {
     try {
       const { id } = req.params
 
@@ -167,12 +218,12 @@ function routes(app: Express) {
         return res.status(404).json({ error: 'User not found'})
       }
 
-      await prisma.pogs.delete({
+      await prisma.user.delete({
         where: {
           id: parseInt(id)
         },
       })
-      res.json(202).json({ message: 'Pog has been sold' })
+      res.json(202).json({ message: 'User has been deleted' })
     } catch {
       res.status(500).json({ error: 'Internal Server Error'})
     }
