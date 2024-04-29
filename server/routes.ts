@@ -146,6 +146,33 @@ function routes(app: Express) {
           wallet
         }
       })
+
+      res.status(201).json(updatedWallet)
+    } catch {
+      res.status(500).json({ error: 'Internal Server Error'})
+    }
+  })
+
+  app.delete("/api/user/pogs/:id", async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params
+
+      const user = await prisma.user.findUnique({
+        where: {
+          id: parseInt(id)
+        }
+      })
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found'})
+      }
+
+      await prisma.pogs.delete({
+        where: {
+          id: parseInt(id)
+        },
+      })
+      res.json(202).json({ message: 'Pog has been sold' })
     } catch {
       res.status(500).json({ error: 'Internal Server Error'})
     }
