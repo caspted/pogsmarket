@@ -2,7 +2,7 @@
 import { Card, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import { Button } from "@/components/ui/button";
-import priceDifference from "@/utils/utilFuncitons";
+import { priceDifference } from "@/utils/utilFuncitons";
 
 const pogsInMarket = [ // This is just a placeholder data
   {
