@@ -48,6 +48,9 @@ const pogsInMarket = [ // This is just a placeholder data
 ]
 
 export default function Home() {
+
+  
+
   return (
     <main>
       <div className="flex overflow-hidden space-x-4">

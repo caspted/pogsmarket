@@ -35,7 +35,7 @@ function routes(app: Express) {
 
       res.status(200).json(pog);
     } catch {
-      res.status(500).json({ error: 'Internal Server Error'})
+      res.status(500).json({ error: 'Internal Server Error' })
     }
 
   });
