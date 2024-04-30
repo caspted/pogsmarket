@@ -70,13 +70,44 @@ export default function Home() {
     }
   }
 
-  const buyPogs = async (pogs_id: number, user_id: number | undefined) => {
+  const updateUserWallet = async (id: number | undefined, wallet: number) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/user/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ wallet: wallet }),
+      });
+      const data = await response.json();
+      setUser(data);
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+  const addUserPogs = async (pogs_id: number, user_id: number | undefined) => {
     try {
       const response = await fetch(`http://localhost:3001/api/user/${user_id}/pogs/${pogs_id}`, {
         method: 'POST',
       });
       const data = await response.json();
       setUserPogs(data);
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+  const buyPogs = async (pogs_id: number, user_id: number | undefined, wallet: number | undefined) => {
+    try {
+      const selectedPog = pogs.find(pog => pog.id === pogs_id);
+      if (selectedPog) {
+        const newBalance = (wallet ?? 0) - selectedPog.current_price;
+        addUserPogs(pogs_id, user_id);
+        updateUserWallet(user_id, newBalance);
+      }
     }
     catch (error) {
       console.error(error);
@@ -187,7 +218,7 @@ export default function Home() {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => buyPogs(pogs.id, user?.id)}>Buy!</AlertDialogAction>
+                          <AlertDialogAction onClick={() => buyPogs(pogs.id, user?.id, user?.wallet)}>Buy!</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>

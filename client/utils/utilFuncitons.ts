@@ -10,4 +10,4 @@ export const priceDifference = (currentPrice: number, previousPrice: number) => 
   return result.toFixed(2) + "%";
 }
 
-export const setUserID = 99;
+export const setUserID = 81;

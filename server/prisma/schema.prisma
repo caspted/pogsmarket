@@ -30,9 +30,9 @@ model UserPogs {
 
 model User {
   id              Int       @id @default(autoincrement())
-  name            String    @unique
+  name            String    
   email           String    @unique
-  password        String    @unique
+  password        String    
   is_admin        Boolean   
   wallet          Float
 }
