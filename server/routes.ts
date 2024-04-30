@@ -8,7 +8,7 @@ function routes(app: Express) {
 
   app.use(cors())
 
-//pogs market APIs (we technically dont need this since its the same as the /api/admin/pogs route) ------------------------------------------------------
+//pogs market APIs
   app.get("/api/pogs", async (req: Request, res: Response) => {
     try {
       const pogs = await prisma.pogs.findMany();
@@ -74,7 +74,7 @@ function routes(app: Express) {
     }
   })
 
-  // user-owned Pogs APIs (GET all, POST, DELETE only) ------------------------------------------------------------------------------------
+  // user-owned Pogs APIs (GET all, POST, DELETE only)
   app.get("/api/user/:userid/pogs", async (req: Request, res: Response) => {
     try {
       const userPogs = await prisma.userPogs.findMany({
@@ -129,7 +129,7 @@ function routes(app: Express) {
     }
   })
 
-  // user information APIs (GET all, POST, DELETE) ------------------------------------------------------------------------------------
+  // user information APIs
   app.get("/api/user", async (req: Request, res: Response) => {
     try {
       const users = await prisma.user.findMany()
@@ -227,13 +227,14 @@ function routes(app: Express) {
           id: parseInt(id)
         },
       })
-      res.json(202).json({ message: 'User has been deleted' })
+
+      res.status(202).json({  message: 'User deleted successfully' })
     } catch {
       res.status(500).json({ error: 'Internal Server Error'})
     }
   })
 
-//admin side APIs (Get all Pogs, Get Pogs by ID, Create Pogs, Update Pogs, Delete Pogs) ----------------------------------------------
+//admin side APIs
   app.get("/api/admin/pogs", async (req: Request, res: Response) => {
     try {
       const adminPogs = await prisma.pogs.findMany()

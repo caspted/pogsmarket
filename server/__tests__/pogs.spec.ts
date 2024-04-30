@@ -11,8 +11,6 @@ describe("Pogs", () => {
       await prisma.pogs.deleteMany();
     });
 
-    // or EXAMPLE 2, it can also be setup like this 
-    
     it("should READ or return all pogs", async () => { // test for READ
       // setup
       await prisma.pogs.createMany({
