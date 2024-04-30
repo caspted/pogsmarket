@@ -6,53 +6,66 @@ import { Form, FormField, FormMessage, FormItem, FormLabel, FormControl } from "
 import { Input } from "@/components/ui/input";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Pogs } from "@/utils/types";
 
 const formSchema = z.object({
   name: z.string().nonempty().min(2).max(100),
-  currentPrice: z.string().nonempty().refine((value) => parseInt(value) > 0),
+  current_price: z.string().nonempty().refine((value) => parseInt(value) > 0),
+  previous_price: z.string().nonempty().refine((value) => parseInt(value)),
   color: z.string().nonempty(),
-  // using color as object instead of string
-  // .refine((value) => {
-  //   const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-  //   if (!hexRegex.test(value)) {
-  //     throw new Error("Invalid color format");
-  //   }
-  //   const hex = value.replace("#", "");
-  //   let r, g, b;
-  //   if (hex.length === 3) {
-  //     r = parseInt(hex[0] + hex[0], 16);
-  //     g = parseInt(hex[1] + hex[1], 16);
-  //     b = parseInt(hex[2] + hex[2], 16);
-  //   } else {
-  //     r = parseInt(hex[0] + hex[1], 16);
-  //     g = parseInt(hex[2] + hex[3], 16);
-  //     b = parseInt(hex[4] + hex[5], 16);
-  //   }
-  //   return { r, g, b };
-  // }),
-  ticker: z.string().nonempty().toUpperCase().min(3).max(5),
+  ticker_symbol: z.string().nonempty().toUpperCase().min(3).max(5),
 });
 
 export default function PogsForm() {
+
+  const [pogs, setPogs] = useState<Pogs>();
+  // const [name, setName] = useState<string>("");
+  // const [current_price, setCurrentPrice] = useState<number>(0);
+  // const [previous_price, setPreviousPrice] = useState<number>(0);
+  // const [color, setColor] = useState<string>("");
+  // const [ticker_symbol, setTickerSymbol] = useState<string>("");
+
+  const addPogs = async (pogs: Pogs) => {
+    try {
+
+      const response = await fetch('http://localhost:3001/api/admin/pogs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pogs),
+      });
+      const data = await response.json();
+      setPogs(data);
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      currentPrice: "",
+      current_price: "",
+      previous_price: "",
       color: "", //{},
-      ticker: "",
+      ticker_symbol: "",
     },
   });
 
-  const handleSubmit = () => {};
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const pogsData: Pogs = { ...data, id: 0, current_price: parseInt(data.current_price), previous_price: parseInt(data.previous_price) };
+    await addPogs(pogsData);
+  };
   
   return <Card className="w-full p-4">
   <CardTitle className="text-xl font-bold mb-4">
     Add Pogs
   </CardTitle>
   <Form {...form}>
-    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <FormField control={form.control} name="name" render={({ field }) => {
         return <FormItem>
           <FormLabel>Pogs Name</FormLabel>
@@ -62,7 +75,7 @@ export default function PogsForm() {
           <FormMessage />
         </FormItem>
       }}/>
-      <FormField control={form.control} name="currentPrice" render={({ field }) => {
+      <FormField control={form.control} name="current_price" render={({ field }) => {
         return <FormItem>
           <FormLabel>Current Price</FormLabel>
           <FormControl>
@@ -81,7 +94,7 @@ export default function PogsForm() {
           <FormMessage />
         </FormItem>
       }}/>
-      <FormField control={form.control} name="ticker" render={({ field }) => {
+      <FormField control={form.control} name="ticker_symbol" render={({ field }) => {
         return <FormItem>
           <FormLabel>Ticker Symbol</FormLabel>
           <FormControl>

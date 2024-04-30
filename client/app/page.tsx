@@ -17,30 +17,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { priceDifference, setUserID } from "@/utils/utilFuncitons";
 import React, { useEffect, useState } from "react";
-
-type Pogs = {
-  id: number;
-  name: string;
-  current_price: number;
-  previous_price: number;
-  color: string;
-  ticker_symbol: string;
-};
-
-type Users = {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  is_admin: boolean;
-  wallet: number;
-};
-
-type UserPogs = {
-  id: number;
-  pogs_id: number;
-  user_id: number;
-}
+import { Pogs, Users, UserPogs } from "@/utils/types";
 
 export default function Home() {
 
@@ -204,7 +181,6 @@ export default function Home() {
                   <TableCell>{pogs.color}</TableCell>
                   <TableCell>{pogs.ticker_symbol}</TableCell>
                   <TableCell className="text-right">
-                    {/* <Button>Buy</Button>  */}
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="default">Buy</Button>
@@ -222,7 +198,6 @@ export default function Home() {
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
-                    {/* turn button into modal for confirmation */}
                   </TableCell>
                 </TableRow>
               )})}

@@ -77,7 +77,11 @@ function routes(app: Express) {
   // user-owned Pogs APIs (GET all, POST, DELETE only) ------------------------------------------------------------------------------------
   app.get("/api/user/:userid/pogs", async (req: Request, res: Response) => {
     try {
-      const userPogs = await prisma.userPogs.findMany()
+      const userPogs = await prisma.userPogs.findMany({
+        where: {
+          user_id: parseInt(req.params.userid)
+        }
+      })
       res.status(200).json(userPogs)
     } catch {
       res.status(500).json({ error: 'Internal Server Error'})
@@ -264,13 +268,13 @@ function routes(app: Express) {
 
   app.post("/api/admin/pogs", async (req: Request, res: Response) => {
     try {
-      const { name, ticker_symbol, previous_price, current_price, color} = req.body
+      const { name, ticker_symbol, current_price, color} = req.body
   
       const newPogs = await prisma.pogs.create({
         data: {
           name,
           ticker_symbol,
-          previous_price,
+          previous_price: 0,
           current_price,
           color
         }
