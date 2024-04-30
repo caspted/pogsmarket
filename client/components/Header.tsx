@@ -1,4 +1,6 @@
 'use client';
+import { setUserID } from "@/utils/utilFuncitons";
+
 export default function Header() {
   return <div className="flex mb-4 gap-12 p-4 border-b bg-slate-950">
     <div className="flex items-center ml-4">
@@ -7,7 +9,7 @@ export default function Header() {
     <nav className="flex items-center gap-4">
       <a href="/" className="text-white">Home</a>
       <a href="/admin" className="text-white">Admin Panel</a>
-      <a href="/user/1" className="text-white">Owned Pogs</a>
+      <a href={`/user/${setUserID}`} className="text-white">Owned Pogs</a>
     </nav>
   </div>
 }

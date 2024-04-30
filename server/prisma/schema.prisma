@@ -20,6 +20,7 @@ model Pogs {
   previous_price  Float
   current_price   Float
   color           String
+  users           User[]
 }
 
 model UserPogs {
@@ -35,4 +36,5 @@ model User {
   password        String    
   is_admin        Boolean   
   wallet          Float
+  pogs            Pogs[]
 }

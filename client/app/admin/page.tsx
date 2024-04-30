@@ -3,53 +3,44 @@ import PogsForm from "@/components/PogsForm";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import { Button } from "@/components/ui/button";
-import { priceDifference } from "@/utils/utilFuncitons";
+import { priceDifference, setUserID } from "@/utils/utilFuncitons";
 import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { Pogs, Users, UserPogs } from "@/utils/types";
 
-const pogsInMarket = [ // This is just a placeholder data
-  {
-    id: 1,
-    name: "Apple",
-    currentPrice: 1000000,
-    previousPrice: 1200000,
-    color: "silver",
-    ticker: "AAPL"
-  },
-  {
-    id: 2,
-    name: "Alphabet Inc. (Google)",
-    currentPrice: 2000000,
-    previousPrice: 1900000,
-    color: "red",
-    ticker: "GOOG"
-  },
-  {
-    id: 3,
-    name: "Hewlett-Packard Enterprise Company",
-    currentPrice: 800000,
-    previousPrice: 790000,
-    color: "yellow",
-    ticker: "HPQ"
-  },
-  {
-    id: 4,
-    name: "Intel Corporation",
-    currentPrice: 1500000,
-    previousPrice: 1600000,
-    color: "blue",
-    ticker: "INTC"
-  },
-  {
-    id: 5,
-    name: "Berkshire Hathaway Inc.",
-    currentPrice: 900000,
-    previousPrice: 910000,
-    color: "green",
-    ticker: "BRK.A"
-  },
-]
 
 export default function Home() {
+  const [pogs, setPogs] = useState<Pogs[]>([]);
+  const [user, setUser] = useState<Users>();
+  const [userPogs, setUserPogs] = useState<UserPogs[]>([]);
+
+  const getAllPogs = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/admin/pogs');
+      const data = await response.json();
+      setPogs(data);
+    }
+    catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getUser = async (id: number) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/user/${id}`);
+      const data = await response.json();
+      setUser(data);
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    getAllPogs();
+    getUser(setUserID);
+  }, []);
+
   return (
     <main>
       <div className="ml-12 mt-6">
@@ -57,7 +48,7 @@ export default function Home() {
       </div>
       <div className="flex flex-row mt-12 mx-12 space-x-12">
         <div className="w-1/3">
-          <PogsForm />
+          <PogsForm/>
         </div>
         <div className="w-2/3">
           <Card className="w-full p-4">
@@ -79,18 +70,18 @@ export default function Home() {
                 </TableRow>
               </TableHeader>
                 <TableBody>
-                {pogsInMarket.map((pogs) => {
-                  const difference = priceDifference(pogs.currentPrice, pogs.previousPrice);
+                {pogs.map((pogs) => {
+                  const difference = priceDifference(pogs.current_price, pogs.previous_price);
                   const isPositive = difference.startsWith('-') ? 'text-red-500' : 'text-green-500';
 
                   return (
                   <TableRow key={pogs.id}>
                     <TableCell className="font-medium">{pogs.name}</TableCell>
-                    <TableCell>{pogs.currentPrice}</TableCell>
-                    <TableCell>{pogs.previousPrice}</TableCell>
+                    <TableCell>{pogs.current_price}</TableCell>
+                    <TableCell>{pogs.previous_price}</TableCell>
                     <TableCell><span className={isPositive}>{difference}</span></TableCell>
                     <TableCell>{pogs.color}</TableCell>
-                    <TableCell>{pogs.ticker}</TableCell>
+                    <TableCell>{pogs.ticker_symbol}</TableCell>
                     <TableCell className="">
                         <Button asChild>
                           <Link href={`/admin/pogs/${pogs.id}`}>Edit</Link>
