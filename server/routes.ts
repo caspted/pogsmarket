@@ -123,8 +123,9 @@ function routes(app: Express) {
           id: parseInt(userpogsid)
         },
       })
-      res.json(202).json({ message: 'Pog has been sold' })
-    } catch {
+      res.status(202).json({ message: 'Pog has been sold' })
+    } catch (error) {
+      console.error("Error deleting user-pog association:", error);
       res.status(500).json({ error: 'Internal Server Error'})
     }
   })
