@@ -8,11 +8,12 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Pogs } from "@/utils/types";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   name: z.string().nonempty().min(2).max(100),
-  current_price: z.string().nonempty().refine((value) => parseInt(value) > 0),
-  previous_price: z.string().nonempty().refine((value) => parseInt(value)),
+  current_price: z.coerce.number(),
+  previous_price: z.number(),
   color: z.string().nonempty(),
   ticker_symbol: z.string().nonempty().toUpperCase().min(3).max(5),
 });
@@ -20,15 +21,20 @@ const formSchema = z.object({
 export default function PogsForm() {
 
   const [pogs, setPogs] = useState<Pogs>();
-  // const [name, setName] = useState<string>("");
-  // const [current_price, setCurrentPrice] = useState<number>(0);
-  // const [previous_price, setPreviousPrice] = useState<number>(0);
-  // const [color, setColor] = useState<string>("");
-  // const [ticker_symbol, setTickerSymbol] = useState<string>("");
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      current_price: 0,
+      previous_price: 0,
+      color: "", //{},
+      ticker_symbol: "",
+    },
+  });
 
   const addPogs = async (pogs: Pogs) => {
     try {
-
       const response = await fetch('http://localhost:3001/api/admin/pogs', {
         method: 'POST',
         headers: {
@@ -44,20 +50,19 @@ export default function PogsForm() {
     }
   }
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      current_price: "",
-      previous_price: "",
-      color: "", //{},
-      ticker_symbol: "",
-    },
-  });
-
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const pogsData: Pogs = { ...data, id: 0, current_price: parseInt(data.current_price), previous_price: parseInt(data.previous_price) };
+    const pogsData = {
+      id: 0,
+      name: data.name,
+      current_price: data.current_price,
+      previous_price: 0,
+      color: data.color,
+      ticker_symbol: data.ticker_symbol,
+    };
+    console.log("submitted: " + pogsData)
+    console.log(data)
     await addPogs(pogsData);
+    // window.location.reload();
   };
   
   return <Card className="w-full p-4">
@@ -66,26 +71,26 @@ export default function PogsForm() {
   </CardTitle>
   <Form {...form}>
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-      <FormField control={form.control} name="name" render={({ field }) => {
-        return <FormItem>
+      <FormField control={form.control} name="name" render={({ field }) => (
+        <FormItem>
           <FormLabel>Pogs Name</FormLabel>
           <FormControl>
             <Input placeholder="Pogs Name" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>
-      }}/>
-      <FormField control={form.control} name="current_price" render={({ field }) => {
-        return <FormItem>
+      )}/>
+      <FormField control={form.control} name="current_price" render={({ field }) => (
+        <FormItem>
           <FormLabel>Current Price</FormLabel>
           <FormControl>
             <Input type="number" placeholder="Current Price" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>
-      }}/>
-      <FormField control={form.control} name="color" render={({ field }) => {
-        return <FormItem>
+      )}/>
+      <FormField control={form.control} name="color" render={({ field }) => (
+        <FormItem>
           <FormLabel>Color</FormLabel>
           <FormControl>
             {/* <Input type="color" placeholder="Color" {...field} /> */}
@@ -93,17 +98,22 @@ export default function PogsForm() {
           </FormControl>
           <FormMessage />
         </FormItem>
-      }}/>
-      <FormField control={form.control} name="ticker_symbol" render={({ field }) => {
-        return <FormItem>
+      )}/>
+      <FormField control={form.control} name="ticker_symbol" render={({ field }) => (
+        <FormItem>
           <FormLabel>Ticker Symbol</FormLabel>
           <FormControl>
             <Input placeholder="Ticker Symbol" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>
-      }}/>
-      <Button className="mt-8" type="submit">Add Pog</Button>
+      )}/>
+      <Button type="submit" className="mt-8" onClick={() =>
+        toast("Pogs has been added", {
+          description: "Sunday, December 03, 2023 at 9:00 AM",
+        })
+
+      }>Add Pog</Button>
     </form>
   </Form>
 </Card>
