@@ -110,9 +110,8 @@ export default function PogsForm() {
       )}/>
       <Button type="submit" className="mt-8" onClick={() =>
         toast("Pogs has been added", {
-          description: "Sunday, December 03, 2023 at 9:00 AM",
+          description: "Wait a moment for the list to reload.",
         })
-
       }>Add Pog</Button>
     </form>
   </Form>
