@@ -1,6 +1,6 @@
 Instructions:
 
-1.) Rename"env.test" into ".env.test"
+1.) Go to "server" folder and copy/rename "env.test" into ".env.test"
 
 2.) Replace the "DATABASE_URL" with your database details
 
