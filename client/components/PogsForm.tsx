@@ -109,7 +109,7 @@ export default function PogsForm() {
         </FormItem>
       )}/>
       <Button type="submit" className="mt-8" onClick={() =>
-        toast("Pogs has been added", {
+        toast("Pog has been added", {
           description: "Wait a moment for the list to reload.",
         })
       }>Add Pog</Button>

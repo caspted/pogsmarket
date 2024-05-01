@@ -82,7 +82,16 @@ function routes(app: Express) {
           user_id: parseInt(req.params.userid)
         }
       })
-      res.status(200).json(userPogs)
+
+      const pogs = await prisma.pogs.findMany({
+        where: {
+          id: {
+            in: userPogs.map((userPog) => userPog.pogs_id)
+          }
+        }
+      })
+
+      res.status(200).json(pogs)
     } catch {
       res.status(500).json({ error: 'Internal Server Error'})
     }
@@ -90,27 +99,27 @@ function routes(app: Express) {
 
   app.post("/api/user/:userid/pogs/:pogsid", async (req: Request, res: Response) => {
     try {
+      // const { name, email, password } = req.body
 
-      const newUserPog = await prisma.userPogs.create({
+      const newUserPogs = await prisma.userPogs.create({
         data: {
-          pogs_id: parseInt(req.params.pogsid),
           user_id: parseInt(req.params.userid),
+          pogs_id: parseInt(req.params.pogsid)
         }
       })
 
-      res.status(201).json(newUserPog)
+      res.status(201).json(newUserPogs)
     } catch {
-      res.status(500).json({ error: 'Internal Service Error'})
+      res.status(500).json({ error: 'Internal Service Error: User-Pogs not posted'})
     }
   })
 
-  app.delete("/api/user/:userid/pogs/:userpogsid", async (req: Request, res: Response) => {
+  app.delete("/api/user/:userid/pogs/:pogsid", async (req: Request, res: Response) => {
     try {
-      const { userpogsid } = req.params
-
-      const userPogs = await prisma.userPogs.findUnique({
+      const userPogs = await prisma.userPogs.findMany({
         where: {
-          id: parseInt(userpogsid)
+          user_id: parseInt(req.params.userid),
+          pogs_id: parseInt(req.params.pogsid)
         }
       })
 
@@ -118,12 +127,15 @@ function routes(app: Express) {
         return res.status(404).json({ error: 'User-owned Pogs not found'})
       }
 
-      await prisma.userPogs.delete({
-        where: {
-          id: parseInt(userpogsid)
-        },
-      })
-      res.status(202).json({ message: 'Pog has been sold' })
+      for (let i = 0; i < userPogs.length; i++) {
+        await prisma.userPogs.delete({
+          where: {
+            id: userPogs[i].id
+          }
+        })
+      }
+      
+      res.status(202).json({ message: 'Pog has been deleted' })
     } catch (error) {
       console.error("Error deleting user-pog association:", error);
       res.status(500).json({ error: 'Internal Server Error'})

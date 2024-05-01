@@ -68,6 +68,10 @@ export default function Home() {
     try {
       const response = await fetch(`http://localhost:3001/api/user/${user_id}/pogs/${pogs_id}`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: user_id, pogs_id: pogs_id }),
       });
       const data = await response.json();
       setUserPogs(data);
