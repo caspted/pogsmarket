@@ -16,6 +16,7 @@ import {
 import { priceDifference, setUserID } from "@/utils/utilFuncitons";
 import React, { useEffect, useState } from "react";
 import { Pogs, Users, UserPogs } from "@/utils/types";
+import { set } from "zod";
 
 
 export default function UserID() {
@@ -23,17 +24,6 @@ export default function UserID() {
   const [pogs, setPogs] = useState<Pogs[]>([]);
   const [user, setUser] = useState<Users>();
   const [userPogs, setUserPogs] = useState<UserPogs[]>([]);
-
-  const getPogs = async (id: number) => {
-    try {
-      const response = await fetch(`http://localhost:3001/api/admin/pogs/${id}`);
-      const data = await response.json();
-      setPogs(data);
-    }
-    catch (error) {
-      console.error(error);
-    }
-  };
 
   const getUser = async (id: number) => {
     try {
@@ -67,7 +57,7 @@ export default function UserID() {
     try {
       const response = await fetch(`http://localhost:3001/api/user/${id}/pogs`);
       const data = await response.json();
-      setUserPogs(data);
+      setPogs(data);
     }
     catch (error) {
       console.error(error);
@@ -102,10 +92,16 @@ export default function UserID() {
   }
 
   useEffect(() => {
-    getUserPogs(setUserID);
-    getPogs(userPogs?.[0]?.id ?? 0); // Updated code to access the id property of the first element in the userPogs array
     getUser(setUserID);
-  }, [userPogs]); // Updated code to include 'userPogs' in the dependency array
+    getUserPogs(setUserID);
+
+    const intervalId = setInterval(() => {
+      getUserPogs(setUserID);
+    }, 1000); // Fetch new data every 1 second
+  
+    // Clean up the interval on unmount
+    return () => clearInterval(intervalId);
+  }, []); 
 
   return <div>
     <div className="flex justify-center mt-16 mx-12 space-x-8">
@@ -130,7 +126,7 @@ export default function UserID() {
               <TableHead className="w-[100px]">% Diff</TableHead>
               <TableHead className="">Color</TableHead>
               <TableHead className="">Ticker</TableHead>
-              <TableHead className="">Sell this Pog</TableHead>
+              <TableHead className="">Sell Pog</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -160,7 +156,9 @@ export default function UserID() {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction>Sell!</AlertDialogAction>
+                              <AlertDialogAction onClick={() => sellPogs(pogs.id, user?.id, user?.wallet)}>
+                                Sell!
+                              </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>

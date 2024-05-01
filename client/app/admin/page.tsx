@@ -7,6 +7,7 @@ import { priceDifference, setUserID } from "@/utils/utilFuncitons";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Pogs, Users, UserPogs } from "@/utils/types";
+import { toast } from "sonner";
 
 
 export default function Home() {
@@ -36,8 +37,58 @@ export default function Home() {
     }
   }
 
+  const deletePogs = async (id: number) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/admin/pogs/${id}`, {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+      setPogs(data.filter((delpogs: Pogs) => delpogs.id !== id));
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+  const editPogs = async (id: number, newData: Pogs) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/admin/pogs/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newData),
+      });
+      const data = await response.json();
+      setPogs(data.filter((delpogs: Pogs) => delpogs.id !== id));
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+  const pogsPriceChange = async () => {
+    const updatedPogs = pogs.map((pogs) => {
+      const priceChange = Math.random() * 100;
+      const operation = Math.random() < 0.5 ? '+' : '-';
+      const newPrice = operation === '+' ? pogs.current_price + priceChange : pogs.current_price - priceChange;
+      const previousPrice = pogs.current_price;
+      return {
+        ...pogs,
+        current_price: Number(newPrice.toFixed(2)),
+        previous_price: previousPrice,
+      };
+    });
+
+    const updatePromises = updatedPogs.map((pog) => editPogs(pog.id, pog));
+    await Promise.all(updatePromises);
+
+    setPogs(updatedPogs);
+  };
+
   useEffect(() => {
     getUser(setUserID);
+    getAllPogs();
 
     const intervalId = setInterval(() => {
       getAllPogs();
@@ -53,8 +104,18 @@ export default function Home() {
         <h1 className="text-3xl font-bold">Admin Panel</h1>
       </div>
       <div className="flex flex-row mt-12 mx-12 space-x-12">
-        <div className="w-1/3">
+        <div className="flex flex-col items-center w-1/3">
           <PogsForm/>
+          <div className="mt-8">
+            <Button variant="secondary" onClick={() => {
+              toast("Pogs prices have been changed", {
+                description: "Wait a moment for the list to reload.",
+              })
+              pogsPriceChange()}
+            }>
+              Trigger Price Change
+            </Button>
+          </div>
         </div>
         <div className="w-2/3">
           <Card className="w-full p-4">
@@ -71,7 +132,6 @@ export default function Home() {
                   <TableHead className="w-[100px]">% Diff</TableHead>
                   <TableHead className="">Color</TableHead>
                   <TableHead className="">Ticker</TableHead>
-                  <TableHead className="">Edit Pogs</TableHead>
                   <TableHead className="">Delete Pogs</TableHead>
                 </TableRow>
               </TableHeader>
@@ -88,13 +148,8 @@ export default function Home() {
                     <TableCell><span className={isPositive}>{difference}</span></TableCell>
                     <TableCell>{pogs.color}</TableCell>
                     <TableCell>{pogs.ticker_symbol}</TableCell>
-                    <TableCell className="">
-                        <Button asChild>
-                          <Link href={`/admin/pogs/${pogs.id}`}>Edit</Link>
-                        </Button>
-                      </TableCell>
                       <TableCell className="">
-                        <Button variant="destructive">Delete</Button>
+                        <Button variant="destructive" onClick={() => deletePogs(pogs.id)}>Delete</Button>
                       </TableCell>
                   </TableRow>
                 )})}
