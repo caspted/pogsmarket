@@ -147,7 +147,7 @@ export default function Home() {
 
       <div className="flex justify-center mt-16 mx-12 space-x-8">
         <Card key={user?.id} className="w-1/4 p-6 bg-slate-200">
-          <CardTitle className="mb-4">Your Balance: ${user?.wallet}</CardTitle>
+          <CardTitle className="mb-4">Your Balance: ${user?.wallet.toFixed(2)}</CardTitle>
           <CardDescription>Welcome, {user?.name}!</CardDescription>
           <CardDescription>email: {user?.email}</CardDescription>
         </Card>
@@ -157,7 +157,7 @@ export default function Home() {
         <div>
           <h1 className="text-2xl font-bold mb-2">Pogs Market</h1>
         </div>
-        <div>
+        <div className="mb-4">
           <Table>
             <TableCaption>A list of Pogs on the market.</TableCaption>
             <TableHeader>

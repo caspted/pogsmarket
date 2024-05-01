@@ -104,10 +104,12 @@ export default function Home() {
         <h1 className="text-3xl font-bold">Admin Panel</h1>
       </div>
       <div className="flex flex-row mt-12 mx-12 space-x-12">
-        <div className="flex flex-col items-center w-1/3">
+        <div className="w-1/3">
           <PogsForm/>
-          <div className="mt-8">
-            <Button variant="secondary" onClick={() => {
+        </div>
+        <div className="flex flex-col items-center w-2/3">
+          <div className="mb-8">
+            <Button variant="default" onClick={() => {
               toast("Pogs prices have been changed", {
                 description: "Wait a moment for the list to reload.",
               })
@@ -116,8 +118,6 @@ export default function Home() {
               Trigger Price Change
             </Button>
           </div>
-        </div>
-        <div className="w-2/3">
           <Card className="w-full p-4">
             <CardTitle className="text-xl font-bold mb-4">
               Listed Pogs

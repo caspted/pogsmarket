@@ -106,7 +106,7 @@ export default function UserID() {
   return <div>
     <div className="flex justify-center mt-16 mx-12 space-x-8">
         <Card key={user?.id} className="w-1/4 p-6 bg-slate-200">
-          <CardTitle className="mb-4">Your Balance: ${user?.wallet}</CardTitle>
+          <CardTitle className="mb-4">Your Balance: ${user?.wallet.toFixed(2)}</CardTitle>
           <CardDescription>Welcome, {user?.name}!</CardDescription>
           <CardDescription>email: {user?.email}</CardDescription>
         </Card>
@@ -117,7 +117,7 @@ export default function UserID() {
           Your owned Pogs
         </CardTitle>
         <Table>
-          <TableCaption>A list of Pogs on the market.</TableCaption>
+          <TableCaption>A list of your bought Pogs.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
