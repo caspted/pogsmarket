@@ -37,8 +37,14 @@ export default function Home() {
   }
 
   useEffect(() => {
-    getAllPogs();
     getUser(setUserID);
+
+    const intervalId = setInterval(() => {
+      getAllPogs();
+    }, 1000); // Fetch new data every 1 second
+  
+    // Clean up the interval on unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
