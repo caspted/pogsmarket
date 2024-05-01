@@ -7,10 +7,9 @@ Instructions:
 3.) Run the following in order:
 
 ---------------------------
-
 cd ./server
 
-npm I
+npm i
 
 yarn migrate:test
 
@@ -20,7 +19,6 @@ npx prisma db seed
 yarn dev:test
 
 ---------------------------
-
 cd ../client
 
 npm i
