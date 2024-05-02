@@ -10,7 +10,7 @@ import {
   AlertDialogDescription,
   AlertDialogAction,
   AlertDialogCancel,
-} from '../components/ui/alert-dialog'; // Import your alert dialog components
+} from '../components/ui/alert-dialog'
 
 describe('AlertDialog', () => {
   test('renders dialog content when trigger is clicked', () => {
